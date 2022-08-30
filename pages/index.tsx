@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
-import Head from "next/head";
 import { useState } from "react";
+import Layout from "components/Layout";
 
 type Message = {
   _id: string;
@@ -31,21 +31,18 @@ function getMessages(): Message[] {
     },
   ];
 }
+
 const Home: NextPage = () => {
   const [messages, setMessages] = useState<Message[]>(getMessages());
 
   return (
     <div>
-      <Head>
-        <title>Web chat</title>
-        <meta name="description" content="Czar+ Web chat" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <Messages data={messages} />
-      <MessageInput
-        onMessageSent={(message) => setMessages([...messages, message])}
-      />
+      <Layout>
+        <Messages data={messages} />
+        <MessageInput
+          onMessageSent={(message) => setMessages([...messages, message])}
+        />
+      </Layout>
     </div>
   );
 };
