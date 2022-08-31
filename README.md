@@ -14,11 +14,10 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### In Progress
 
-- [ ] Login page
-- [ ] Logout page
-- [ ] Navbar
-
 ### Done ✓
 
+- [x] Login page
+- [x] Logout page
+- [x] Navbar
 - [x] Dockerfile and Github Actions
 - [x] MessageList and MessageInput components
