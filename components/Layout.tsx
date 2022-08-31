@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { Navbar } from "./Navbar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -9,7 +10,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
+      <Navbar />
+
+      <main className="container mx-auto">
         <div>{children}</div>
       </main>
     </>
