@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import { useState } from "react";
 import Layout from "components/Layout";
+import useUser from "lib/useUser";
 
 type Message = {
   _id: string;
@@ -34,6 +35,12 @@ function getMessages(): Message[] {
 
 const Home: NextPage = () => {
   const [messages, setMessages] = useState<Message[]>(getMessages());
+
+  const { user } = useUser({ redirectTo: "/login" });
+
+  if (!user || user.isLoggedIn === false) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
@@ -136,13 +143,14 @@ type MessageInputProps = {
 
 function MessageInput({ onMessageSent }: MessageInputProps) {
   const [message, setMessage] = useState("");
+  const { user } = useUser({ redirectTo: "/login" });
 
   function sendMessage() {
     const messageObj: Message = {
       _id: "1l2j3",
       date: new Date(),
       message: message,
-      username: "Carlos",
+      username: user?.username!,
     };
 
     setMessage("");
