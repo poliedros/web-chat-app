@@ -1,7 +1,8 @@
 import type { NextPage } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "components/Layout";
 import useUser from "lib/useUser";
+import { io, Socket } from "socket.io-client";
 
 type Message = {
   _id: string;
@@ -33,22 +34,40 @@ function getMessages(): Message[] {
   ];
 }
 
+let socket: Socket;
+
 const Home: NextPage = () => {
   const [messages, setMessages] = useState<Message[]>(getMessages());
 
   const { user } = useUser({ redirectTo: "/login" });
 
+  useEffect(() => socketInitializer());
+
+  const socketInitializer = () => {
+    socket = io("http://localhost:5000");
+
+    socket.on("connect", () => console.log("connected"));
+
+    socket.on("message", function (message: Message) {
+      console.log(message);
+      setMessages([...messages, message]);
+    });
+  };
+
   if (!user || user.isLoggedIn === false) {
     return <div>Loading...</div>;
+  }
+
+  function onMessageSent(message: Message) {
+    setMessages([...messages, message]);
+    socket.emit("message", message);
   }
 
   return (
     <div>
       <Layout>
         <Messages data={messages} />
-        <MessageInput
-          onMessageSent={(message) => setMessages([...messages, message])}
-        />
+        <MessageInput onMessageSent={onMessageSent} />
       </Layout>
     </div>
   );
@@ -147,7 +166,7 @@ function MessageInput({ onMessageSent }: MessageInputProps) {
 
   function sendMessage() {
     const messageObj: Message = {
-      _id: "1l2j3",
+      _id: new Date().toString(),
       date: new Date(),
       message: message,
       username: user?.username!,
