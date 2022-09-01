@@ -12,44 +12,21 @@ type Message = {
 };
 
 function getMessages(): Message[] {
-  return [
-    {
-      _id: "1",
-      username: "Carlos",
-      date: new Date(),
-      message: "What's up",
-    },
-    {
-      _id: "2",
-      username: "Anderson",
-      date: new Date(),
-      message: "Now Czar+ has its own chat room. How awesome is that?!",
-    },
-    {
-      _id: "3",
-      username: "Daniela",
-      date: new Date(),
-      message: "Luv u babe!",
-    },
-  ];
+  return [];
 }
 
 let socket: Socket;
 
 const Home: NextPage = () => {
   const [messages, setMessages] = useState<Message[]>(getMessages());
-
   const { user } = useUser({ redirectTo: "/login" });
 
   useEffect(() => socketInitializer());
 
   const socketInitializer = () => {
-    socket = io("http://localhost:5000");
-
-    socket.on("connect", () => console.log("connected"));
+    socket = io("https://api.chat.czar.dev");
 
     socket.on("message", function (message: Message) {
-      console.log(message);
       setMessages([...messages, message]);
     });
   };
