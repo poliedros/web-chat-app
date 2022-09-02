@@ -16,7 +16,7 @@ function getMessages(): Message[] {
   return [];
 }
 
-let socket: Socket = io("http://localhost:5000");
+let socket: Socket = io("https://api.chat.czar.dev");
 
 const Home: NextPage = () => {
   const [messages, setMessages] = useState<Message[]>(getMessages());
