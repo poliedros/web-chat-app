@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Layout from "components/Layout";
 import useUser from "lib/useUser";
 import { io, Socket } from "socket.io-client";
+import { v4 as uuidv4 } from "uuid";
 
 type Message = {
   _id: string;
@@ -15,7 +16,7 @@ function getMessages(): Message[] {
   return [];
 }
 
-let socket: Socket;
+let socket: Socket = io("http://localhost:5000");
 
 const Home: NextPage = () => {
   const [messages, setMessages] = useState<Message[]>(getMessages());
@@ -24,11 +25,14 @@ const Home: NextPage = () => {
   useEffect(() => socketInitializer());
 
   const socketInitializer = () => {
-    socket = io("https://api.chat.czar.dev");
-
     socket.on("message", function (message: Message) {
-      setMessages([...messages, message]);
+      if (!messages.some((m) => m._id === message._id))
+        setMessages([...messages, message]);
     });
+
+    return () => {
+      socket.off("message");
+    };
   };
 
   if (!user || user.isLoggedIn === false) {
@@ -143,7 +147,7 @@ function MessageInput({ onMessageSent }: MessageInputProps) {
 
   function sendMessage() {
     const messageObj: Message = {
-      _id: new Date().toString(),
+      _id: uuidv4(),
       date: new Date(),
       message: message,
       username: user?.username!,
